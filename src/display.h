@@ -25,7 +25,9 @@ void fnvDrawMainMenuList(void);
 void fnvDrawConfigMenuList(void);
 void fnvToggleBacklight(void);
 void fnvIncDecBrightness(void);
-void fnvNothingHere();
+void fnvNothingHere(); 
+
+void fnvMainScreen(void);
 
 /* ENUM */
 typedef enum

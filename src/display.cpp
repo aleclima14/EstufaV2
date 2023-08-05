@@ -47,7 +47,8 @@ void fnvDisplayInit(void)
    u8g2.begin();
    pinMode(ENABLE_BACKLIGHT, OUTPUT);
    analogWrite(ENABLE_BACKLIGHT, EERead(BACKLIGHT_ADDRESS));
-   pfvChangeScreen = fnvDrawMainMenuList;
+   // pfvChangeScreen = fnvDrawMainMenuList;
+   pfvChangeScreen = fnvMainScreen;
 }
 
 /**
@@ -320,4 +321,25 @@ void fnvWriteBacklightValue(int brightnessWriteValue)
 void fnvNothingHere()
 {
   //Nothing here
+}
+
+void fnvMainScreen(void)
+{
+   u8g2.firstPage();
+   do
+   {  
+      u8g2.drawRFrame(1, 1, 126, 62, 3);
+      u8g2.drawLine(1, 31, 126, 31);
+      u8g2.drawLine(64, 1, 64, 31);
+      fnvDrawString(u8g2_font_helvB18_tf, 23, 25, "28");
+      u8g2.drawXBMP(4, 8, 16, 16, thermometer_icon);
+      u8g2.drawXBMP(53, 12, 8, 8, celsius_icon);
+
+      fnvDrawString(u8g2_font_helvB18_tf, 85, 25, "70");
+      u8g2.drawXBMP(67, 7, 16, 16, water_drop_icon);
+      u8g2.drawXBMP(114, 12, 8, 8, percentage_icon);
+
+      fnvDrawString(u8g2_font_helvB18_tf, 23, 56, "12:31:59");
+      u8g2.drawXBMP(4, 39, 16, 16, clock_icon);
+   } while (u8g2.nextPage());
 }
