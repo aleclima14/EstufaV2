@@ -20,6 +20,7 @@ void fnvIncDecSelectedSubMenuItem(void);
 void fnvWriteBacklightValue(int value);
 void fnvSetBrightness(void);
 void fnvDrawString(const uint8_t *font, uint8_t x, uint8_t y, const char *string);
+void fnvDrawValue(const uint8_t *font, uint8_t x, uint8_t y, double value, uint8_t decimal);
 
 void (*pfvChangeScreen)();
 
@@ -76,6 +77,22 @@ void fnvDrawString(const uint8_t *font, uint8_t x, uint8_t y, const char *string
 {
    u8g2.setFont(font);
    u8g2.drawStr(x, y, string);
+}
+
+/**
+ * @brief Set font and draw value
+ * 
+ * @param font 
+ * @param x 
+ * @param y 
+ * @param value 
+ * @param decimal 
+ */
+void fnvDrawValue(const uint8_t *font, uint8_t x, uint8_t y, double value, uint8_t decimal)
+{
+   u8g2.setFont(font);
+   u8g2.setCursor(x, y);
+   u8g2.print(value, decimal);
 }
 
 /**
@@ -325,21 +342,25 @@ void fnvNothingHere()
 
 void fnvMainScreen(void)
 {
+   float readTemperature = fvfReadTemperatureDHT22();
+   float readHumidity = fvfReadHumidityDHT22();
+
    u8g2.firstPage();
    do
    {  
       u8g2.drawRFrame(1, 1, 126, 62, 3);
       u8g2.drawLine(1, 31, 126, 31);
       u8g2.drawLine(64, 1, 64, 31);
-      fnvDrawString(u8g2_font_helvB18_tf, 23, 25, "28");
+
+      fnvDrawValue(u8g2_font_helvB18_tf, 23, 25, readTemperature, 0);
       u8g2.drawXBMP(4, 8, 16, 16, thermometer_icon);
       u8g2.drawXBMP(53, 12, 8, 8, celsius_icon);
 
-      fnvDrawString(u8g2_font_helvB18_tf, 85, 25, "70");
+      fnvDrawValue(u8g2_font_helvB18_tf, 85, 25, readHumidity, 0);
       u8g2.drawXBMP(67, 7, 16, 16, water_drop_icon);
       u8g2.drawXBMP(114, 12, 8, 8, percentage_icon);
 
       fnvDrawString(u8g2_font_helvB18_tf, 23, 56, "12:31:59");
-      u8g2.drawXBMP(4, 39, 16, 16, clock_icon);
+      u8g2.drawXBMP(4, 39, 16, 16, hourglass_icon);
    } while (u8g2.nextPage());
 }

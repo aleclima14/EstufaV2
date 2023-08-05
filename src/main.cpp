@@ -15,6 +15,7 @@ void setup()
    fnvDisplayInit();
    fnvBuzzerInit();
    fnvButtonsInit();
+   StartDHT22();
    Serial.begin(9600);
 }
 

@@ -17,6 +17,7 @@
 #ifdef U8X8_HAVE_HW_SPI
 #include <SPI.h>
 #endif
+#include "temperature.h"
 
 /* GLOBAL FUNCTIONS */
 void fnvDisplayInit(void);
