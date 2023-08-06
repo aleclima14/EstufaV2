@@ -22,13 +22,11 @@
 /* GLOBAL FUNCTIONS */
 void fnvDisplayInit(void);
 void fnvBacklightSetValue(int valuePWM);
-void fnvDrawMainMenuList(void);
-void fnvDrawConfigMenuList(void);
-void fnvToggleBacklight(void);
+void fnvDrawMenuList(void);
 void fnvIncDecBrightness(void);
 void fnvNothingHere(); 
 
-void fnvMainScreen(void);
+void fnvDrawMainScreen(void);
 
 /* ENUM */
 typedef enum
@@ -45,17 +43,9 @@ typedef enum
 
 typedef enum
 {
+  SUBMENU_CONFIG_HEATING,
   SUBMENU_CONFIG_BRIGHTNESS,
-  SUBMENU_CONFIG_BACKLIGHT,
   SUBMENU_CONFIG_SOUND,
-  SUBMENU_CONFIG_TEST1,
-  SUBMENU_CONFIG_TEST2,
-  SUBMENU_CONFIG_TEST3,
-  SUBMENU_CONFIG_TEST4,
-  SUBMENU_CONFIG_TEST5,
-  SUBMENU_CONFIG_TEST6,
-  SUBMENU_CONFIG_TEST7,
-  SUBMENU_CONFIG_TEST8,
   SUBMENU_CONFIG_RETURN
 }EnSubMenuConfigurationItems;
 
@@ -71,14 +61,6 @@ typedef enum
 /* STRUCT */
 typedef struct
 {
-  EnMainMenuItems enMenuItem;
-  const unsigned char *pucMenuIcons;
-  const char *pucMenuName;
-  void (*pvFunction)();
-}StMainMenuList;
-
-typedef struct
-{
   EnSubMenuConfigurationItems enMenuItem;
   const char *pucMenuName;
   void (*pvFunction)();
@@ -92,34 +74,14 @@ typedef struct
 }StBrightnessLevel;
 
 /* TABLE */
-static const StMainMenuList stMainMenuTable[] =
-{
-  /*MENU INDEX              16x16 ICON            MENU NAME                 FUNCTION              */
-  {MENU_LOCALIZATION,       localization_icon,    "Localization",           NULL                  },
-  {MENU_BLUETOOTH,          bluetooth_icon,       "Bluetooth",              NULL                  },
-  {MENU_BATTERY,            battery_icon,         "Battery",                NULL                  },
-  {MENU_CLOCK,              clock_icon,           "Clock",                  NULL                  },
-  {MENU_ALERTS,             exclamation_icon,     "Alerts",                 NULL                  },
-  {MENU_GAUGE,              gauge_icon,           "Gauge",                  NULL                  },
-  {MENU_CONFIGURATION,      config_icon,          "Configuration",          &fnvDrawConfigMenuList},
-};
-#define MAIN_MENU_TABLE_SIZE (int)(sizeof(stMainMenuTable)/sizeof(StMainMenuList))
 
 static const StSubMenuConfigList stSubMenuConfigTable[] = 
 {
   /*MENU INDEX                            MENU NAME             FUNCTION                    */
-   {SUBMENU_CONFIG_BRIGHTNESS,            "Brightness",         &fnvIncDecBrightness        },
-   {SUBMENU_CONFIG_BACKLIGHT,             "Backlight",          &fnvNothingHere             },
-   {SUBMENU_CONFIG_SOUND,                 "Sound",              &fnvBuzzerToggleStatus      },
-   {SUBMENU_CONFIG_TEST1,                 "Test 1",             &fnvNothingHere             },
-   {SUBMENU_CONFIG_TEST2,                 "Test 2",             &fnvNothingHere             },
-   {SUBMENU_CONFIG_TEST3,                 "Test 3",             &fnvNothingHere             },
-   {SUBMENU_CONFIG_TEST4,                 "Test 4",             &fnvNothingHere             },
-   {SUBMENU_CONFIG_TEST5,                 "Test 5",             &fnvNothingHere             },
-   {SUBMENU_CONFIG_TEST6,                 "Test 6",             &fnvNothingHere             },
-   {SUBMENU_CONFIG_TEST7,                 "Test 7",             &fnvNothingHere             },
-   {SUBMENU_CONFIG_TEST8,                 "Test 8",             &fnvNothingHere             },
-   {SUBMENU_CONFIG_RETURN,                "Back",               &fnvDrawMainMenuList        },
+   {SUBMENU_CONFIG_HEATING,               "Aquecimento",         &fnvNothingHere             },
+   {SUBMENU_CONFIG_BRIGHTNESS,            "Brilho tela",         &fnvIncDecBrightness        },
+   {SUBMENU_CONFIG_SOUND,                 "Som",                 &fnvBuzzerToggleStatus      },
+   {SUBMENU_CONFIG_RETURN,                "Voltar",              &fnvDrawMainScreen          },
 };
 #define CONFIG_MENU_TABLE_SIZE (int)(sizeof(stSubMenuConfigTable)/sizeof(StSubMenuConfigList))
 

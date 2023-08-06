@@ -39,4 +39,8 @@
 #define BACKLIGHT_ADDRESS  0
 #define BUZZER_ADDRESS     1
 
+/* FONT */
+#define FONT_TEXT_SMALL u8g2_font_t0_11_mr
+#define FONT_TEXT_BIG   u8g2_font_helvB18_tf
+
 #endif /* __configuration_h__ */

@@ -15,7 +15,6 @@
 #endif
 
 /* PRIVATE FUNCTIONS */
-void fnvIncDecSelectedItemMenu(void);
 void fnvIncDecSelectedSubMenuItem(void);
 void fnvWriteBacklightValue(int value);
 void fnvSetBrightness(void);
@@ -25,14 +24,10 @@ void fnvDrawValue(const uint8_t *font, uint8_t x, uint8_t y, double value, uint8
 void (*pfvChangeScreen)();
 
 /* GLOBAL VARIABLES */
-int iPreviusItem;
-int iNextItem;
-int iSelectedItem = 0;
 int brightnessValue = EERead(BACKLIGHT_ADDRESS);
 int iSelectedSubMenuItem = 0;
 // Adjusts the initial value to be between 0 and 4
 int brightnessSelect = brightnessValue / 55;
-
 int subMenu0 = 0;
 int subMenu1 = 1;
 int subMenu2 = 2;
@@ -48,8 +43,7 @@ void fnvDisplayInit(void)
    u8g2.begin();
    pinMode(ENABLE_BACKLIGHT, OUTPUT);
    analogWrite(ENABLE_BACKLIGHT, EERead(BACKLIGHT_ADDRESS));
-   // pfvChangeScreen = fnvDrawMainMenuList;
-   pfvChangeScreen = fnvMainScreen;
+   pfvChangeScreen = fnvDrawMainScreen;
 }
 
 /**
@@ -96,94 +90,46 @@ void fnvDrawValue(const uint8_t *font, uint8_t x, uint8_t y, double value, uint8
 }
 
 /**
- * @brief Draw Main Menu 
+ * @brief Draw main menu
  * 
  */
-void fnvDrawMainMenuList(void)
+void fnvDrawMainScreen(void)
 {
-   iPreviusItem = iSelectedItem - 1;
-   iNextItem = iSelectedItem + 1;
-   iSelectedSubMenuItem = 0;
-  
+   float readTemperature = fvfReadTemperatureDHT22();
+   float readHumidity = fvfReadHumidityDHT22();
+
+   u8g2.setDrawColor(1);
+
    u8g2.firstPage();
    do
-   {
-      u8g2.setDrawColor(1);
-      fnvIncDecSelectedItemMenu();
-      u8g2.drawXBMP(0, 0, 128, 64, backgroundMenuList);
+   {  
+      u8g2.drawRFrame(1, 1, 126, 62, 3);
+      u8g2.drawLine(1, 31, 126, 31);
+      u8g2.drawLine(64, 1, 64, 31);
 
-      u8g2.drawXBMP(5, 2, 16, 16, stMainMenuTable[iPreviusItem].pucMenuIcons);
-      fnvDrawString(u8g2_font_t0_11_mr, 24, 14,stMainMenuTable[iPreviusItem].pucMenuName);
+      fnvDrawValue(FONT_TEXT_BIG, 23, 25, readTemperature, 0);
+      u8g2.drawXBMP(4, 8, 16, 16, thermometer_icon);
+      u8g2.drawXBMP(53, 12, 8, 8, celsius_icon);
 
-      u8g2.drawXBMP(5, 24, 16, 16, stMainMenuTable[iSelectedItem].pucMenuIcons);
-      fnvDrawString(u8g2_font_t0_11b_mr, 24, 36,stMainMenuTable[iSelectedItem].pucMenuName);
+      fnvDrawValue(FONT_TEXT_BIG, 85, 25, readHumidity, 0);
+      u8g2.drawXBMP(67, 7, 16, 16, water_drop_icon);
+      u8g2.drawXBMP(114, 12, 8, 8, percentage_icon);
 
-      u8g2.drawXBMP(5, 45, 16, 16, stMainMenuTable[iNextItem].pucMenuIcons);
-      fnvDrawString(u8g2_font_t0_11_mr, 24, 58,stMainMenuTable[iNextItem].pucMenuName);
-
-      u8g2.drawBox(124, 64 / MAIN_MENU_TABLE_SIZE * iSelectedItem, 3, 64 / MAIN_MENU_TABLE_SIZE);
+      fnvDrawString(FONT_TEXT_BIG, 23, 56, "--:--:--");
+      u8g2.drawXBMP(4, 39, 16, 16, hourglass_icon);
    } while (u8g2.nextPage());
-}
 
-/**
- * @brief If the button Up or Down was pressed, change the selected menu item
- * 
- */
-void fnvIncDecSelectedItemMenu(void)
-{
-   switch (ButtonPressed())
+   if(ButtonPressed() == BUTTON_SELECT)
    {
-      case BUTTON_UP:
-      {
-         iSelectedItem--;
-         if (iSelectedItem < 0 )  iSelectedItem = MAIN_MENU_TABLE_SIZE - 1;
-      }
-      break;
-
-      case BUTTON_DOWN:
-      {
-         iSelectedItem++;
-         if (iSelectedItem >= MAIN_MENU_TABLE_SIZE) iSelectedItem = 0;
-      }
-      break;
-
-      case BUTTON_SELECT:
-      {
-         switch (stMainMenuTable[iSelectedItem].enMenuItem)
-         {
-            case MENU_SOUND:
-            {
-               // To call a function:
-               stMainMenuTable[iSelectedItem].pvFunction();
-            }
-            break;
-
-            case MENU_CONFIGURATION:
-            {
-               // To change screen:
-               pfvChangeScreen = stMainMenuTable[iSelectedItem].pvFunction;
-            }
-            break;
-
-            default:
-            break;
-         }
-      }
-      break;
-
-      default:
-      break;
+      pfvChangeScreen = fnvDrawMenuList;
    }
-
-   if (iPreviusItem < 0) iPreviusItem = MAIN_MENU_TABLE_SIZE - 1;
-   if (iNextItem >= MAIN_MENU_TABLE_SIZE) iNextItem = 0;
 }
 
 /**
- * @brief 
+ * @brief Draw Menu List
  * 
  */
-void fnvDrawConfigMenuList(void)
+void fnvDrawMenuList(void)
 {
    u8g2.firstPage();
    do
@@ -197,22 +143,13 @@ void fnvDrawConfigMenuList(void)
       u8g2.setDrawColor(2);
 
       /* Draw line 0 */
-      fnvDrawString(u8g2_font_t0_11_mr, 6, 13, stSubMenuConfigTable[subMenu0].pucMenuName);
-      // u8g2.drawStr(85, 13, "<   >");
-      // fnvSetBrightness();
-
+      fnvDrawString(FONT_TEXT_SMALL, 6, 13, stSubMenuConfigTable[subMenu0].pucMenuName);
       /* Draw line 1 */
-      fnvDrawString(u8g2_font_t0_11_mr, 6, 28, stSubMenuConfigTable[subMenu1].pucMenuName);
-      
+      fnvDrawString(FONT_TEXT_SMALL, 6, 28, stSubMenuConfigTable[subMenu1].pucMenuName);
       /* Draw line 2 */
-      fnvDrawString(u8g2_font_t0_11_mr, 6, 43, stSubMenuConfigTable[subMenu2].pucMenuName);
-      // u8g2.drawStr(85, 43, "<   >");
-      // EERead(BUZZER_ADDRESS) > 0 ? u8g2.drawStr(94, 43, "On"): u8g2.drawStr(91, 43, "Off");
-      
+      fnvDrawString(FONT_TEXT_SMALL, 6, 43, stSubMenuConfigTable[subMenu2].pucMenuName);
       /* Draw line 3 */
-      fnvDrawString(u8g2_font_t0_11_mr, 6, 58, stSubMenuConfigTable[subMenu3].pucMenuName);
-      
-
+      fnvDrawString(FONT_TEXT_SMALL, 6, 58, stSubMenuConfigTable[subMenu3].pucMenuName);
    }while (u8g2.nextPage());
 }
 
@@ -270,6 +207,7 @@ void fnvIncDecSelectedSubMenuItem(void)
                subMenu3 = 3;
                selectBarPosition = 1;
                pfvChangeScreen = stSubMenuConfigTable[iSelectedSubMenuItem].pvFunction;
+               iSelectedSubMenuItem = 0;
             }
             break;
 
@@ -338,29 +276,4 @@ void fnvWriteBacklightValue(int brightnessWriteValue)
 void fnvNothingHere()
 {
   //Nothing here
-}
-
-void fnvMainScreen(void)
-{
-   float readTemperature = fvfReadTemperatureDHT22();
-   float readHumidity = fvfReadHumidityDHT22();
-
-   u8g2.firstPage();
-   do
-   {  
-      u8g2.drawRFrame(1, 1, 126, 62, 3);
-      u8g2.drawLine(1, 31, 126, 31);
-      u8g2.drawLine(64, 1, 64, 31);
-
-      fnvDrawValue(u8g2_font_helvB18_tf, 23, 25, readTemperature, 0);
-      u8g2.drawXBMP(4, 8, 16, 16, thermometer_icon);
-      u8g2.drawXBMP(53, 12, 8, 8, celsius_icon);
-
-      fnvDrawValue(u8g2_font_helvB18_tf, 85, 25, readHumidity, 0);
-      u8g2.drawXBMP(67, 7, 16, 16, water_drop_icon);
-      u8g2.drawXBMP(114, 12, 8, 8, percentage_icon);
-
-      fnvDrawString(u8g2_font_helvB18_tf, 23, 56, "12:31:59");
-      u8g2.drawXBMP(4, 39, 16, 16, hourglass_icon);
-   } while (u8g2.nextPage());
 }
