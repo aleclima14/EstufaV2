@@ -34,6 +34,8 @@ int subMenu2 = 2;
 int subMenu3 = 3;
 int selectBarPosition = 1;
 
+bool flagToggleHeating = false;
+
 /**
  * @brief Init u8g2 lib and backlight display
  * 
@@ -272,6 +274,22 @@ void fnvWriteBacklightValue(int brightnessWriteValue)
       fnvBuzzerPlay(1000, 50);
    }
 }
+
+void fnvHeating(void)
+{
+   flagToggleHeating = !flagToggleHeating;
+   if(flagToggleHeating == true)
+   {
+      fnvHeaterControl(POWER_CH_1_PIN, 255);
+      fnvHeaterControl(POWER_CH_2_PIN, 170);
+   }
+   else
+   {
+      fnvHeaterControl(POWER_CH_1_PIN, 0);
+      fnvHeaterControl(POWER_CH_2_PIN, 0);
+   }
+}
+
 
 void fnvNothingHere()
 {

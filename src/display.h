@@ -22,11 +22,12 @@
 /* GLOBAL FUNCTIONS */
 void fnvDisplayInit(void);
 void fnvBacklightSetValue(int valuePWM);
+void fnvDrawMainScreen(void);
 void fnvDrawMenuList(void);
 void fnvIncDecBrightness(void);
+void fnvHeating(void);
 void fnvNothingHere(); 
 
-void fnvDrawMainScreen(void);
 
 /* ENUM */
 typedef enum
@@ -78,7 +79,7 @@ typedef struct
 static const StSubMenuConfigList stSubMenuConfigTable[] = 
 {
   /*MENU INDEX                            MENU NAME             FUNCTION                    */
-   {SUBMENU_CONFIG_HEATING,               "Aquecimento",         &fnvNothingHere             },
+   {SUBMENU_CONFIG_HEATING,               "Aquecimento",         &fnvHeating                 },
    {SUBMENU_CONFIG_BRIGHTNESS,            "Brilho tela",         &fnvIncDecBrightness        },
    {SUBMENU_CONFIG_SOUND,                 "Som",                 &fnvBuzzerToggleStatus      },
    {SUBMENU_CONFIG_RETURN,                "Voltar",              &fnvDrawMainScreen          },

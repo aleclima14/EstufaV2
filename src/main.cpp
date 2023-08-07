@@ -15,11 +15,13 @@ void setup()
    fnvDisplayInit();
    fnvBuzzerInit();
    fnvButtonsInit();
-   StartDHT22();
+   fnvStartDHT22();
+   fnvInitHeater();
    Serial.begin(9600);
 }
 
 void loop()
 {
    (*pfvChangeScreen)();
+   
 }

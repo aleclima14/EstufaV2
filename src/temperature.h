@@ -21,8 +21,12 @@
 /* ENUMS */
 
 /* FUNCTIONS */
-void StartDHT22(void);
+void fnvStartDHT22(void);
 float fvfReadTemperatureDHT22(void);
 float fvfReadHumidityDHT22(void);
+
+void fnvInitHeater(void);
+void fnvHeaterControl(uint8_t channel, uint8_t power);
+
 
 #endif // end __temperature_h__

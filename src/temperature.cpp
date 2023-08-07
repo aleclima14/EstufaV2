@@ -25,7 +25,7 @@ DHT dht(TEMP_SENSOR_PIN, DHT_TYPE);
  * @brief Init the DHT22 sensor
  * 
  */
-void StartDHT22(void)
+void fnvStartDHT22(void)
 {
    dht.begin();
 }
@@ -53,5 +53,19 @@ float fvfReadHumidityDHT22(void)
       humidity = 99;
    }
    return humidity;
+}
+
+/**
+ * @brief Init Heater 
+ * 
+ */
+void fnvInitHeater(void)
+{
+   pinMode(POWER_CH_1_PIN, OUTPUT);
+}
+
+void fnvHeaterControl(uint8_t channel, uint8_t power)
+{
+   analogWrite(channel, power);
 }
 
