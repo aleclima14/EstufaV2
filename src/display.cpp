@@ -278,16 +278,6 @@ void fnvWriteBacklightValue(int brightnessWriteValue)
 void fnvHeating(void)
 {
    flagToggleHeating = !flagToggleHeating;
-   if(flagToggleHeating == true)
-   {
-      fnvHeaterControl(POWER_CH_1_PIN, 255);
-      fnvHeaterControl(POWER_CH_2_PIN, 170);
-   }
-   else
-   {
-      fnvHeaterControl(POWER_CH_1_PIN, 0);
-      fnvHeaterControl(POWER_CH_2_PIN, 0);
-   }
 }
 
 

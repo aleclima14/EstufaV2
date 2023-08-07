@@ -27,6 +27,6 @@ float fvfReadHumidityDHT22(void);
 
 void fnvInitHeater(void);
 void fnvHeaterControl(uint8_t channel, uint8_t power);
-
+void fnvCtrlHeating(void);
 
 #endif // end __temperature_h__
