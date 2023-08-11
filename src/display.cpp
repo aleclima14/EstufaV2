@@ -105,20 +105,19 @@ void fnvDrawMainScreen(void)
    u8g2.firstPage();
    do
    {  
-      u8g2.drawRFrame(1, 1, 126, 62, 3);
-      u8g2.drawLine(1, 31, 126, 31);
-      u8g2.drawLine(64, 1, 64, 31);
+      u8g2.drawXBMP(0, 0, 128, 64, backgroundMainScreen);
+      fnvDrawString(FONT_TEXT_SMALL, 17, 13, "ABS");
+      fnvDrawString(FONT_TEXT_SMALL, 81, 13, "65 C");
 
-      fnvDrawValue(FONT_TEXT_BIG, 23, 25, readTemperature, 0);
-      u8g2.drawXBMP(4, 8, 16, 16, thermometer_icon);
-      u8g2.drawXBMP(53, 12, 8, 8, celsius_icon);
+      fnvDrawValue(FONT_TEXT_BIG, 14, 38, readHumidity, 0);
+      u8g2.drawXBMP(44, 29, 8, 8, percentage_icon);
 
-      fnvDrawValue(FONT_TEXT_BIG, 85, 25, readHumidity, 0);
-      u8g2.drawXBMP(67, 7, 16, 16, water_drop_icon);
-      u8g2.drawXBMP(114, 12, 8, 8, percentage_icon);
+      fnvDrawValue(FONT_TEXT_BIG, 78, 38, readTemperature, 0);
+      u8g2.drawXBMP(108, 19, 8, 8, celsius_icon);
 
-      fnvDrawString(FONT_TEXT_BIG, 23, 56, "--:--:--");
-      u8g2.drawXBMP(4, 39, 16, 16, hourglass_icon);
+      // fnvDrawString(FONT_TEXT_BIG, 23, 56, "--:--:--");
+      // u8g2.drawXBMP(4, 39, 16, 16, hourglass_icon);
+      
    } while (u8g2.nextPage());
 
    if(ButtonPressed() == BUTTON_SELECT)
