@@ -74,7 +74,7 @@ void fnvCtrlHeating(void)
    if((flagToggleHeating == true) && (fvfReadTemperatureDHT22() < 65))
    {
       fnvHeaterControl(POWER_CH_1_PIN, 255);
-      fnvHeaterControl(POWER_CH_2_PIN, 170);
+      fnvHeaterControl(POWER_CH_2_PIN, 128);
    }
    else
    {
