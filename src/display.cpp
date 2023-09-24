@@ -111,7 +111,7 @@ void fnvDrawMainScreen(void)
       u8g2.drawXBMP(44, 29, 8, 8, percentage_icon);
 
       fnvDrawValue(FONT_TEXT_BIG, 78, 38, readTemperature, 0);
-      u8g2.drawXBMP(108, 19, 8, 8, celsius_icon);
+      u8g2.drawXBMP(108, 29, 8, 8, celsius_icon);
 
       // fnvDrawString(FONT_TEXT_BIG, 23, 56, "--:--:--");
       // u8g2.drawXBMP(4, 39, 16, 16, hourglass_icon);
