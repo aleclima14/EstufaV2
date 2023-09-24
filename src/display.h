@@ -26,8 +26,6 @@ void fnvDrawMainScreen(void);
 void fnvDrawMenuList(void);
 void fnvIncDecBrightness(void);
 void fnvHeating(void);
-void fnvNothingHere(); 
-
 
 /* ENUM */
 typedef enum
@@ -47,6 +45,18 @@ typedef enum
   BRIGHTNESS_5,
 }EnBrightnessLevel;
 
+typedef enum
+{
+   TEMPERATURE_1,
+   TEMPERATURE_2,
+   TEMPERATURE_3,
+   TEMPERATURE_4,
+   TEMPERATURE_5,
+   TEMPERATURE_6,
+   TEMPERATURE_7,
+   TEMPERATURE_8,
+}EnTemperatureLevel;
+
 /* STRUCT */
 typedef struct
 {
@@ -62,6 +72,13 @@ typedef struct
   const int integerValue;
 }StBrightnessLevel;
 
+typedef struct
+{
+  EnTemperatureLevel level;
+  const char *levelName;
+  const int integerValue;
+}StTemperatureLevel;
+
 /* TABLE */
 
 static const StSubMenuConfigList stSubMenuConfigTable[] = 
@@ -76,12 +93,25 @@ static const StSubMenuConfigList stSubMenuConfigTable[] =
 
 static const StBrightnessLevel stBrightnessList[] =
 {
-  {BRIGHTNESS_1,      "O",        0   },
-  {BRIGHTNESS_2,      "25",       25  },
-  {BRIGHTNESS_3,      "5O",       50  },
-  {BRIGHTNESS_4,      "75",       75  },
-  {BRIGHTNESS_5,      "1OO",      100 },
+   {BRIGHTNESS_1,      "O",        0   },
+   {BRIGHTNESS_2,      "25",       25  },
+   {BRIGHTNESS_3,      "5O",       50  },
+   {BRIGHTNESS_4,      "75",       75  },
+   {BRIGHTNESS_5,      "1OO",      100 },
 };
 #define BRIGHTNESS_LEVELS_SIZE (int)(sizeof(stBrightnessList)/sizeof(StBrightnessLevel))
+
+static const StTemperatureLevel stTemperatureList[] =
+{
+   {TEMPERATURE_1,      "O",       0  },
+   {TEMPERATURE_2,      "4O",      40 },
+   {TEMPERATURE_3,      "45",      45 },
+   {TEMPERATURE_4,      "5O",      50 },
+   {TEMPERATURE_5,      "55",      55 },
+   {TEMPERATURE_6,      "6O",      60 },
+   {TEMPERATURE_7,      "65",      65 },
+   {TEMPERATURE_8,      "7O",      70 },
+};
+#define TEMPERATURE_LEVELS_SIZE (int)(sizeof(stTemperatureList)/sizeof(StTemperatureLevel))
 
 #endif /* __diplay_h__ */
