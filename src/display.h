@@ -18,12 +18,14 @@
 #include <SPI.h>
 #endif
 #include "temperature.h"
+#include "app_temperature.h"
 
 /* GLOBAL FUNCTIONS */
 void fnvDisplayInit(void);
 void fnvBacklightSetValue(int valuePWM);
 void fnvDrawMainScreen(void);
 void fnvDrawMenuList(void);
+void fnvDrawMaterialList(void);
 void fnvIncDecBrightness(void);
 void fnvHeating(void);
 void fnvNothingHere(); 
@@ -67,7 +69,7 @@ typedef struct
 static const StSubMenuConfigList stSubMenuConfigTable[] = 
 {
   /*MENU INDEX                            MENU NAME             FUNCTION                    */
-   {SUBMENU_CONFIG_HEATING,               "Aquecimento",         &fnvHeating                 },
+   {SUBMENU_CONFIG_HEATING,               "Aquecimento",         &fnvDrawMaterialList        },
    {SUBMENU_CONFIG_BRIGHTNESS,            "Brilho tela",         &fnvIncDecBrightness        },
    {SUBMENU_CONFIG_SOUND,                 "Som",                 &fnvBuzzerToggleStatus      },
    {SUBMENU_CONFIG_RETURN,                "Voltar",              &fnvDrawMainScreen          },

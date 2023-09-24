@@ -152,6 +152,45 @@ void fnvDrawMenuList(void)
    }while (u8g2.nextPage());
 }
 
+void fnvDrawMaterialList(void)
+{
+   u8g2.firstPage();
+   do
+   {
+      fnvIncDecSelectedSubMenuItem();
+      u8g2.setDrawColor(1);
+      u8g2.drawLine(125, 1, 125, 63);
+      u8g2.drawBox(124, 64 / MATERIAL_LIST_SIZE * iSelectedSubMenuItem, 3, 64 / MATERIAL_LIST_SIZE);
+      u8g2.drawXBMP(2, selectBarPosition, 116, 16, submenuSelectBar);
+      u8g2.setFontMode(1);
+      u8g2.setDrawColor(2);
+
+      /* Draw line 0 */
+      fnvDrawString(FONT_TEXT_SMALL, 6, 13, stMaterialListTable[subMenu0].pucMaterialName);
+      fnvDrawString(FONT_TEXT_SMALL, 80, 13, "<    >");
+      fnvDrawValue(FONT_TEXT_SMALL, 92, 13, stMaterialListTable[subMenu0].SetTemperature, 0);
+
+      /* Draw line 1 */
+      fnvDrawString(FONT_TEXT_SMALL, 6, 28, stMaterialListTable[subMenu1].pucMaterialName);
+      fnvDrawString(FONT_TEXT_SMALL, 80, 28, "<    >");
+      fnvDrawValue(FONT_TEXT_SMALL, 92, 28, stMaterialListTable[subMenu1].SetTemperature, 0);
+
+      /* Draw line 2 */
+      fnvDrawString(FONT_TEXT_SMALL, 6, 43, stMaterialListTable[subMenu2].pucMaterialName);
+      fnvDrawString(FONT_TEXT_SMALL, 80, 43, "<    >");
+      fnvDrawValue(FONT_TEXT_SMALL, 92, 43, stMaterialListTable[subMenu2].SetTemperature, 0);
+
+      /* Draw line 3 */
+      fnvDrawString(FONT_TEXT_SMALL, 6, 58, stMaterialListTable[subMenu3].pucMaterialName);
+      if(stMaterialListTable[subMenu3].enMaterial != RETURN)
+      {
+         fnvDrawString(FONT_TEXT_SMALL, 80, 58, "<    >");
+         fnvDrawValue(FONT_TEXT_SMALL, 92, 58, stMaterialListTable[subMenu3].SetTemperature, 0);
+      }
+
+   }while (u8g2.nextPage());
+}
+
 /**
  * @brief Config submenu navigation logic
  * 
@@ -179,8 +218,17 @@ void fnvIncDecSelectedSubMenuItem(void)
 
       case BUTTON_DOWN:
       {
-         if (iSelectedSubMenuItem >= CONFIG_MENU_TABLE_SIZE-1) iSelectedSubMenuItem = CONFIG_MENU_TABLE_SIZE-1;
-         else iSelectedSubMenuItem++;
+         if(pfvChangeScreen == fnvDrawMenuList)
+         {
+            if (iSelectedSubMenuItem >= CONFIG_MENU_TABLE_SIZE-1) iSelectedSubMenuItem = CONFIG_MENU_TABLE_SIZE-1;
+            else iSelectedSubMenuItem++;
+         }
+
+         if(pfvChangeScreen == fnvDrawMaterialList)
+         {
+            if (iSelectedSubMenuItem >= MATERIAL_LIST_SIZE-1) iSelectedSubMenuItem = MATERIAL_LIST_SIZE-1;
+            else iSelectedSubMenuItem++;
+         }
          fnvWriteBacklightValue(brightnessValue);
          selectBarPosition = selectBarPosition + 15;
          if(selectBarPosition > 46) selectBarPosition = 46;
@@ -196,25 +244,53 @@ void fnvIncDecSelectedSubMenuItem(void)
 
       case BUTTON_SELECT:
       {
-         switch (stSubMenuConfigTable[iSelectedSubMenuItem].enMenuItem)
+         if(pfvChangeScreen == fnvDrawMenuList)
          {
-            case SUBMENU_CONFIG_RETURN:
+            switch (stSubMenuConfigTable[iSelectedSubMenuItem].enMenuItem)
             {
-               subMenu0 = 0;
-               subMenu1 = 1;
-               subMenu2 = 2;
-               subMenu3 = 3;
-               selectBarPosition = 1;
-               pfvChangeScreen = stSubMenuConfigTable[iSelectedSubMenuItem].pvFunction;
-               iSelectedSubMenuItem = 0;
-            }
-            break;
+               case SUBMENU_CONFIG_HEATING:
+               case SUBMENU_CONFIG_RETURN:
+               {
+                  subMenu0 = 0;
+                  subMenu1 = 1;
+                  subMenu2 = 2;
+                  subMenu3 = 3;
+                  selectBarPosition = 1;
+                  pfvChangeScreen = stSubMenuConfigTable[iSelectedSubMenuItem].pvFunction;
+                  iSelectedSubMenuItem = 0;
+               }
+               break;
 
-            default:
-            {
-               stSubMenuConfigTable[iSelectedSubMenuItem].pvFunction();
+               default:
+               {
+                  stSubMenuConfigTable[iSelectedSubMenuItem].pvFunction();
+               }
+               break;
             }
-            break;
+         }
+
+         if(pfvChangeScreen == fnvDrawMaterialList)
+         {
+            switch (stMaterialListTable[iSelectedSubMenuItem].enMaterial)
+            {
+               case RETURN:
+               {
+                  subMenu0 = 0;
+                  subMenu1 = 1;
+                  subMenu2 = 2;
+                  subMenu3 = 3;
+                  selectBarPosition = 1;
+                  pfvChangeScreen = fnvDrawMainScreen;
+                  iSelectedSubMenuItem = 0;
+               }
+               break;
+
+               default:
+               {
+
+               }
+               break;
+            }
          }
       }
       break;
