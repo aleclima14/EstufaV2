@@ -8,7 +8,9 @@
 #include "peripherals.h"
 
 /* GLOBAL VARIABLES */
-//empty
+ulong ulDebounceUP = 0;
+ulong ulDebounceDW = 0;
+ulong ulDebounceSL = 0;
 
 /* LOCAL FUNCTIONS */
 //empty
@@ -32,18 +34,18 @@ void fnvBuzzerInit()
  */
 void fnvBuzzerPlay(int frequency, int duration)
 {
-  if (EERead(BUZZER_ADDRESS) > 0)
-  {
-    float periode = 1000.0 / frequency;
+   if (EERead(BUZZER_ADDRESS) > 0)
+   {
+      float periode = 1000.0 / frequency;
 
-    for (int i = 0; i < duration / (periode); i++)
-    {
-      digitalWrite(BUZZER_PIN, HIGH);
-      delayMicroseconds(periode * 500);
-      digitalWrite(BUZZER_PIN, LOW);
-      delayMicroseconds(periode * 500);
-    }
-  }
+      for (int i = 0; i < duration / (periode); i++)
+      {
+         digitalWrite(BUZZER_PIN, HIGH);
+         delayMicroseconds(periode * 500);
+         digitalWrite(BUZZER_PIN, LOW);
+         delayMicroseconds(periode * 500);
+      }
+   }
 }
 
 /**
@@ -87,39 +89,36 @@ Keypressed ButtonPressed()
    static int buttonDW = 0;
    static int buttonSL = 0;
    static bool flagButtonSL = false;
-   static unsigned long ulDebounceUP = 0;
-   static unsigned long ulDebounceDW = 0;
-   static unsigned long ulDebounceSL = 0;
+
+   flagButtonSL = buttonSL;
 
    buttonUP = digitalRead(BUTTON_UP_PIN);
+   buttonDW = digitalRead(BUTTON_DOWN_PIN);
+   buttonSL = digitalRead(BUTTON_SELECT_PIN);
+
    if(!buttonUP)
    {
-      if((millis() - ulDebounceUP) > DEBOUCE_BUTTON)
+      if(ElapsedTimerMillis(&ulDebounceUP, DEBOUCE_BUTTON))
       {
-         ulDebounceUP = millis();
          returnButton = BUTTON_UP;
          fnvBuzzerPlay(2000, 50);
       }
    }
 
-   buttonDW = digitalRead(BUTTON_DOWN_PIN);
    if(!buttonDW)
    {
-      if((millis() - ulDebounceDW) > DEBOUCE_BUTTON)
+      if(ElapsedTimerMillis(&ulDebounceDW, DEBOUCE_BUTTON))
       {
-         ulDebounceDW = millis();
          returnButton = BUTTON_DOWN;
          fnvBuzzerPlay(2000, 50);
       }
    }
 
-   flagButtonSL = buttonSL;
-   buttonSL = digitalRead(BUTTON_SELECT_PIN);
+   
    if((!buttonSL) && (flagButtonSL))
    {
-      if((millis() - ulDebounceSL) > DEBOUNCE_SELECT_BUTTON)
+      if(ElapsedTimerMillis(&ulDebounceSL, DEBOUNCE_SELECT_BUTTON))
       {
-         ulDebounceSL = millis();
          returnButton = BUTTON_SELECT;
          fnvBuzzerPlay(2000, 50);
       }

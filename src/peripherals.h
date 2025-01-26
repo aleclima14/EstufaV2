@@ -11,6 +11,7 @@
 #include "Arduino.h"
 #include "configuration.h"
 #include "eeprom_app.h"
+#include "timer.h"
 
 /* DEFINES */
 #define DEBOUCE_BUTTON  300
