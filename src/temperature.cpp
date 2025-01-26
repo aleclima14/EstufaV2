@@ -13,7 +13,10 @@
 #include "temperature.h"
 #include <DHT.h>
 
-extern bool flagToggleHeating;
+/* GLOBAL VARIABLES */
+bool flagToggleHeating;
+int setTemperature = 0;
+
 /**
  * @brief DHT Constructor
  * 
@@ -69,9 +72,15 @@ void fnvHeaterControl(uint8_t channel, uint8_t power)
    analogWrite(channel, power);
 }
 
+void fnvSetTemperature(bool isHeating, int temperature)
+{
+   flagToggleHeating = isHeating;
+   setTemperature = temperature;
+}
+
 void fnvCtrlHeating(void)
 {
-   if((flagToggleHeating == true) && (fvfReadTemperatureDHT22() < 65))
+   if((flagToggleHeating == true) && (fvfReadTemperatureDHT22() < setTemperature))
    {
       fnvHeaterControl(POWER_CH_1_PIN, 255);
       fnvHeaterControl(POWER_CH_2_PIN, 128);

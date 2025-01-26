@@ -32,7 +32,8 @@ int subMenu2 = 2;
 int subMenu3 = 3;
 int selectBarPosition = 1;
 
-bool flagToggleHeating = false;
+int temperatureSelect = 0;
+int temperatureValue = 0;
 
 /**
  * @brief Init u8g2 lib and backlight display
@@ -104,14 +105,15 @@ void fnvDrawMainScreen(void)
    do
    {  
       u8g2.drawXBMP(0, 0, 128, 64, backgroundMainScreen);
-      fnvDrawString(FONT_TEXT_SMALL, 17, 13, "ABS");
-      fnvDrawString(FONT_TEXT_SMALL, 81, 13, "65 C");
+      fnvDrawString(FONT_TEXT_SMALL, 2, 13, "Temp. Alvo");
+      fnvDrawString(FONT_TEXT_SMALL, 70, 13, stTemperatureList[temperatureSelect].levelName);
+      u8g2.drawXBMP(85, 5, 8, 8, celsius_icon);
 
       fnvDrawValue(FONT_TEXT_BIG, 14, 38, readHumidity, 0);
       u8g2.drawXBMP(44, 29, 8, 8, percentage_icon);
 
       fnvDrawValue(FONT_TEXT_BIG, 78, 38, readTemperature, 0);
-      u8g2.drawXBMP(108, 19, 8, 8, celsius_icon);
+      u8g2.drawXBMP(108, 29, 8, 8, celsius_icon);
 
       // fnvDrawString(FONT_TEXT_BIG, 23, 56, "--:--:--");
       // u8g2.drawXBMP(4, 39, 16, 16, hourglass_icon);
@@ -130,6 +132,8 @@ void fnvDrawMainScreen(void)
  */
 void fnvDrawMenuList(void)
 {
+   const char *buzzerStatus = "OFF";
+
    u8g2.firstPage();
    do
    {
@@ -143,12 +147,23 @@ void fnvDrawMenuList(void)
 
       /* Draw line 0 */
       fnvDrawString(FONT_TEXT_SMALL, 6, 13, stSubMenuConfigTable[subMenu0].pucMenuName);
+      fnvDrawString(FONT_TEXT_SMALL, 92, 13, stTemperatureList[temperatureSelect].levelName);
+
       /* Draw line 1 */
       fnvDrawString(FONT_TEXT_SMALL, 6, 28, stSubMenuConfigTable[subMenu1].pucMenuName);
+      fnvDrawString(FONT_TEXT_SMALL, 92, 28, stBrightnessList[brightnessSelect].levelName);
+
       /* Draw line 2 */
       fnvDrawString(FONT_TEXT_SMALL, 6, 43, stSubMenuConfigTable[subMenu2].pucMenuName);
+      if(EERead(BUZZER_ADDRESS) > 0)
+      {
+         buzzerStatus = "ON";
+      }
+      fnvDrawString(FONT_TEXT_SMALL, 92, 43, buzzerStatus);
+      
       /* Draw line 3 */
       fnvDrawString(FONT_TEXT_SMALL, 6, 58, stSubMenuConfigTable[subMenu3].pucMenuName);
+
    }while (u8g2.nextPage());
 }
 
@@ -274,11 +289,16 @@ void fnvWriteBacklightValue(int brightnessWriteValue)
 
 void fnvHeating(void)
 {
-   flagToggleHeating = !flagToggleHeating;
-}
+   temperatureSelect++;
+   if(temperatureSelect > TEMPERATURE_8) temperatureSelect = TEMPERATURE_1;
+   temperatureValue = stTemperatureList[temperatureSelect].integerValue;
 
-
-void fnvNothingHere()
-{
-  //Nothing here
+   if(temperatureSelect > TEMPERATURE_1)
+   {
+      fnvSetTemperature(true, temperatureValue);
+   }
+   else
+   {
+      fnvSetTemperature(false, 0);
+   }
 }
